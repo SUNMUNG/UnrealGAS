@@ -6,33 +6,37 @@
 #include "AttributeSet.h"
 #include "GameAbilitySystem/DefaultAttributeSet.h"
 #include "AbilitySystemComponent.h"
-#include "StatusAttributeSet.generated.h"
+#include "ResourceAttributeSet.generated.h"
 
 /**
  * 
  */
+
+
 UCLASS()
-class KI7_UNREALGAS_API UStatusAttributeSet : public UAttributeSet
+class KI7_UNREALGAS_API UResourceAttributeSet : public UAttributeSet
 {
 	GENERATED_BODY()
-
+	
 public:
-	UStatusAttributeSet();
+	UResourceAttributeSet();
 
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attribute")
-	FGameplayAttributeData AttackPower;
-	ATTRIBUTE_ACCESSORS(UStatusAttributeSet, AttackPower)
+	FGameplayAttributeData Health;
+	ATTRIBUTE_ACCESSORS(UResourceAttributeSet, Health)
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attribute")
-	FGameplayAttributeData Defense;
-	ATTRIBUTE_ACCESSORS(UStatusAttributeSet, Defense)
+	FGameplayAttributeData MaxHealth;
+	ATTRIBUTE_ACCESSORS(UResourceAttributeSet, MaxHealth)
 
-		UPROPERTY(BlueprintReadOnly, Category = "Attribute")
-	FGameplayAttributeData Evasion;
-	ATTRIBUTE_ACCESSORS(UStatusAttributeSet, Evasion)
+	UPROPERTY(BlueprintReadOnly, Category = "Attribute")
+	FGameplayAttributeData Mana;
+	ATTRIBUTE_ACCESSORS(UResourceAttributeSet, Mana)
 
-
+	UPROPERTY(BlueprintReadOnly, Category = "Attribute")
+	FGameplayAttributeData MaxMana;
+	ATTRIBUTE_ACCESSORS(UResourceAttributeSet, MaxMana)
 };

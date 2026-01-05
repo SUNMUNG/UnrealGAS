@@ -8,6 +8,7 @@
 #include "GameplayEffectTypes.h"
 #include "TestCharacter.generated.h"
 
+class UResourceAttributeSet;
 class UStatusAttributeSet;
 class UWidgetComponent;
 
@@ -27,8 +28,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void TestHealthChange(float Amount);
 
+	UFUNCTION(BlueprintCallable)
+	void InitializeResource();
+
 protected:
 	virtual void BeginPlay() override;
+
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -48,6 +53,9 @@ protected:
 	TObjectPtr<UWidgetComponent> BarWigetComponent = nullptr;
 	
 private:
+	UPROPERTY()
+	TObjectPtr<UResourceAttributeSet> ResourceAttributeSet = nullptr;
+
 	UPROPERTY()
 	TObjectPtr<UStatusAttributeSet> StatusAttributeSet = nullptr;
 };

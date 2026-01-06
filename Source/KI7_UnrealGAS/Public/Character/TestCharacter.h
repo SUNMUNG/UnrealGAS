@@ -29,17 +29,25 @@ public:
 	void TestHealthChange(float Amount);
 
 	UFUNCTION(BlueprintCallable)
-	void InitializeResource();
+	void TestSetByCaller(float Amount);
+
+	UFUNCTION(BlueprintCallable)
+	void TestAddInfiniteEffect();
+
+	UFUNCTION(BlueprintCallable)
+	void TestRemoveInfiniteEffect();
+
 
 protected:
 	virtual void BeginPlay() override;
-
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
 	void OnHealthChange(const FOnAttributeChangeData& InData);
+	void OnMaxHealthChange(const FOnAttributeChangeData& InData);
 	void OnManaChange(const FOnAttributeChangeData& InData);
+	void OnMaxManaChange(const FOnAttributeChangeData& InData);
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Test")
@@ -51,6 +59,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
 	TObjectPtr<UWidgetComponent> BarWigetComponent = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effect")
+	TSubclassOf<class UGameplayEffect>  TestEffectClass = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effect")
+	TSubclassOf<class UGameplayEffect>  TestInfiniteEffectClass = nullptr;
 	
 private:
 	UPROPERTY()
@@ -58,4 +72,6 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UStatusAttributeSet> StatusAttributeSet = nullptr;
+
+	FActiveGameplayEffectHandle TestInfinite;
 };

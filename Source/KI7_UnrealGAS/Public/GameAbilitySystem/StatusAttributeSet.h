@@ -4,10 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "AttributeSet.h"
-#include "GameAbilitySystem/DefaultAttributeSet.h"
 #include "AbilitySystemComponent.h"
 #include "StatusAttributeSet.generated.h"
 
+
+// 어트리뷰트 Getter/Setter/Initializer를 쉽게 만들어주는 매크로
+#define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
+	GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
+	GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
+	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
+	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 /**
  * 
  */
@@ -15,24 +21,22 @@ UCLASS()
 class KI7_UNREALGAS_API UStatusAttributeSet : public UAttributeSet
 {
 	GENERATED_BODY()
-
+	
 public:
 	UStatusAttributeSet();
 
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+
+	// Instant타입의 이팩트가 적용된 직후에만 호출(Duration이나 Intinite는 실행안됨)
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attribute")
-	FGameplayAttributeData AttackPower;
-	ATTRIBUTE_ACCESSORS(UStatusAttributeSet, AttackPower)
-
-	UPROPERTY(BlueprintReadOnly, Category = "Attribute")
-	FGameplayAttributeData Defense;
-	ATTRIBUTE_ACCESSORS(UStatusAttributeSet, Defense)
+	FGameplayAttributeData MoveSpeed;
+	ATTRIBUTE_ACCESSORS(UStatusAttributeSet, MoveSpeed)
 
 		UPROPERTY(BlueprintReadOnly, Category = "Attribute")
-	FGameplayAttributeData Evasion;
-	ATTRIBUTE_ACCESSORS(UStatusAttributeSet, Evasion)
+	FGameplayAttributeData JumpPower;
+	ATTRIBUTE_ACCESSORS(UStatusAttributeSet, JumpPower)
 
 
 };

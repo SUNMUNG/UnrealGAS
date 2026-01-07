@@ -37,7 +37,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void TestRemoveInfiniteEffect();
 
-
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -53,18 +52,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Test")
 	float TestValue = 10.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Test")
+	TSubclassOf<class UGameplayEffect> TestEffectClass = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Test")
+	TSubclassOf<class UGameplayEffect> TestInfiniteEffectClass = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Initialize")
+	TSubclassOf<class UGameplayEffect> InitializeEffectClass = nullptr;
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ability")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
 	TObjectPtr<UWidgetComponent> BarWigetComponent = nullptr;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effect")
-	TSubclassOf<class UGameplayEffect>  TestEffectClass = nullptr;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effect")
-	TSubclassOf<class UGameplayEffect>  TestInfiniteEffectClass = nullptr;
 	
 private:
 	UPROPERTY()
@@ -72,6 +74,8 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UStatusAttributeSet> StatusAttributeSet = nullptr;
+
+	FGameplayTag Tag_EffectDamage;
 
 	FActiveGameplayEffectHandle TestInfinite;
 };

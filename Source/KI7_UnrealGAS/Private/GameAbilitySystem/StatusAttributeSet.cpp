@@ -4,44 +4,34 @@
 #include "GameAbilitySystem/StatusAttributeSet.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameplayEffectExtension.h"
 
 UStatusAttributeSet::UStatusAttributeSet()
 {
-	InitMoveSpeed(1.0f);
-	InitJumpPower(1.0f);
-
-	
+	InitMoveSpeed(500.0f);
+	InitJumpPower(700.0f);
 }
 
-void UStatusAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
+void UStatusAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
 {
-	Super::PreAttributeChange(Attribute, NewValue);
+	Super::PostAttributeChange(Attribute, OldValue, NewValue);
 
 	if (Attribute == GetMoveSpeedAttribute())
 	{
-		Cast<ACharacter>(GetOwningActor())->GetCharacterMovement()->MaxWalkSpeed =
-			Cast<ACharacter>(GetOwningActor())->GetCharacterMovement()->GetMaxSpeed() * NewValue;
-		UE_LOG(LogTemp, Log, TEXT("현재 이동속도 : %.1f"), GetMoveSpeed());
+		AActor* OwningActor = GetOwningActor(); // 이 어트리뷰트를 가지고 있는 액터
+		ACharacter* OwningChar = Cast<ACharacter>(OwningActor);
+		if (OwningChar)
+		{
+			OwningChar->GetCharacterMovement()->MaxWalkSpeed = NewValue;
+		}
 	}
 
 	if (Attribute == GetJumpPowerAttribute())
 	{
-
+		AActor* OwningActor = GetOwningActor(); // 이 어트리뷰트를 가지고 있는 액터
+		ACharacter* OwningChar = Cast<ACharacter>(OwningActor);
+		if (OwningChar)
+		{
+			OwningChar->GetCharacterMovement()->JumpZVelocity = NewValue;
+		}
 	}
-}
-
-void UStatusAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
-{
-	Super::PostGameplayEffectExecute(Data);
-	UE_LOG(LogTemp, Log, TEXT("현재 이동속도 : %.1f"), GetMoveSpeed());
-	if (Data.EvaluatedData.Attribute == GetMoveSpeedAttribute())	// Health를 변경시키는 이팩트가 실행된 후에 호출되었는지 확인
-	{
-	
-		UE_LOG(LogTemp, Log, TEXT("현재 이동속도 : %.1f"), GetMoveSpeed());
-		
-
-	
-	}
-
 }

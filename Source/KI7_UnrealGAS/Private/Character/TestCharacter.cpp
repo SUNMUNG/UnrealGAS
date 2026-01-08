@@ -5,8 +5,10 @@
 #include "AbilitySystemComponent.h"
 #include "GameAbilitySystem/AttributeSet/ResourceAttributeSet.h"
 #include "GameAbilitySystem/AttributeSet/StatusAttributeSet.h"
+#include "GameAbilitySystem/GameAbilitySystemEnums.h"
 #include "Components/WidgetComponent.h"
 #include "Interface/TwinResource.h"
+#include "EnhancedInputComponent.h"
 
 // Sets default values
 ATestCharacter::ATestCharacter()
@@ -53,6 +55,7 @@ void ATestCharacter::TestAddInfiniteEffect()
 	{
 		FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
 		EffectContext.AddInstigator(this, this);
+		//EffectContext.AddHitResult()
 
 		FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(
 			TestInfiniteEffectClass, 0, EffectContext);
@@ -94,14 +97,35 @@ void ATestCharacter::BeginPlay()
 		{
 			AbilitySystemComponent->GiveAbility(
 				FGameplayAbilitySpec(
-					HasteClass,		// 어빌리티 클래스
-					1,				// 레벨
-					-1,				// 입력 ID
-					this			// 소스
+					HasteClass,									// 어빌리티 클래스
+					1,											// 레벨
+					static_cast<int32>(EAbilityInputID::Haste),	// 입력 ID
+					this										// 소스
 				)
 			);
 		}
-
+		if (SuperJumpClass)
+		{
+			AbilitySystemComponent->GiveAbility(
+				FGameplayAbilitySpec(
+					SuperJumpClass,									// 어빌리티 클래스
+					1,												// 레벨
+					static_cast<int32>(EAbilityInputID::SuperJump),	// 입력 ID
+					this											// 소스
+				)
+			);
+		}
+		if (ChargingJumpClass)
+		{
+			AbilitySystemComponent->GiveAbility(
+				FGameplayAbilitySpec(
+					ChargingJumpClass,									// 어빌리티 클래스
+					1,													// 레벨
+					static_cast<int32>(EAbilityInputID::ChargingJump),	// 입력 ID
+					this												// 소스
+				)
+			);
+		}
 
 		// 초기화 이후에만 가능
 		FOnGameplayAttributeValueChange& onHealthChange =
@@ -172,6 +196,15 @@ void ATestCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	UEnhancedInputComponent* EnhancedInput = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+	if (EnhancedInput)
+	{
+		EnhancedInput->BindAction(IA_Ability1, ETriggerEvent::Started, this, &ATestCharacter::OnAbility1Press);
+		EnhancedInput->BindAction(IA_Ability2, ETriggerEvent::Started, this, &ATestCharacter::OnAbility2Press);
+		EnhancedInput->BindAction(IA_Ability3, ETriggerEvent::Started, this, &ATestCharacter::OnAbility3Press);
+		EnhancedInput->BindAction(IA_Ability3, ETriggerEvent::Completed, this, &ATestCharacter::OnAbility3Release);
+	}
+
 }
 
 void ATestCharacter::OnHealthChange(const FOnAttributeChangeData& InData)
@@ -205,6 +238,42 @@ void ATestCharacter::OnMaxManaChange(const FOnAttributeChangeData& InData)
 	if (ResourceAttributeSet)
 	{
 		ITwinResource::Execute_UpdateMaxMana(BarWigetComponent->GetWidget(), ResourceAttributeSet->GetMaxMana());
+	}
+}
+
+void ATestCharacter::OnAbility1Press()
+{
+	UE_LOG(LogTemp, Log, TEXT("OnAbility1Press"));
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->AbilityLocalInputPressed(static_cast<int32>(EAbilityInputID::Haste));
+	}
+}
+
+void ATestCharacter::OnAbility2Press()
+{
+	UE_LOG(LogTemp, Log, TEXT("OnAbility2Press"));
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->AbilityLocalInputPressed(static_cast<int32>(EAbilityInputID::SuperJump));
+	}
+}
+
+void ATestCharacter::OnAbility3Press()
+{
+	UE_LOG(LogTemp, Log, TEXT("OnAbility3Press"));
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->AbilityLocalInputPressed(static_cast<int32>(EAbilityInputID::ChargingJump));
+	}
+}
+
+void ATestCharacter::OnAbility3Release()
+{
+	UE_LOG(LogTemp, Log, TEXT("OnAbility3Release"));
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->AbilityLocalInputReleased(static_cast<int32>(EAbilityInputID::ChargingJump));
 	}
 }
 
